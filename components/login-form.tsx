@@ -19,6 +19,8 @@ import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { toast } from "sonner"
 import Link from "next/link"
+import { useAppDispatch } from "@/lib/hooks"
+import { setUser } from "@/lib/features/auth/authSlice"
 axios.defaults.withCredentials = true;
 
 const formSchema = z.object({
@@ -35,6 +37,8 @@ const LoginForm = () => {
 
   const [isLoading,setIsLoading] = useState(false)
   const router = useRouter()
+  const dispatch = useAppDispatch()
+
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -49,11 +53,12 @@ const LoginForm = () => {
     setIsLoading(true)
     try{ 
       const {data} = await axios.post(`/api/auth/login`,values)
+      dispatch(setUser(data.user))
       router.push("/")
       toast.success(data.message)
     
     }catch(error:any){
-      toast.error(error?.response?.data?.message || 'Failed to create account.')
+      toast.error(error?.response?.data?.message || 'Failed to login.')
      
     }finally{
       setIsLoading(false)
@@ -75,7 +80,7 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Email</FormLabel>
               <FormControl>
-                <Input placeholder="exampl@gmail.com" {...field} />
+                <Input type="email" placeholder="exampl@gmail.com" {...field} />
               </FormControl>
 
               <FormMessage />
@@ -89,7 +94,7 @@ const LoginForm = () => {
             <FormItem>
               <FormLabel>Password</FormLabel>
               <FormControl>
-                <Input placeholder="******" {...field} />
+                <Input type="password" placeholder="******" {...field} />
               </FormControl>
 
               <FormMessage />

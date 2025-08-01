@@ -13,19 +13,22 @@ import { useRouter } from "next/navigation"
 import axios from "axios"
 import { toast } from "sonner"
 import Link from "next/link"
+import { setUser } from "@/lib/features/auth/authSlice"
+import { useAppDispatch, useAppSelector } from "@/lib/hooks"
 axios.defaults.withCredentials = true;
 
 export default function UserMenu() {
-  const [user, setUser] = useState<{ username: string; email: string } | null>(null)
+  const dispatch = useAppDispatch()
   const router = useRouter()
+  const user = useAppSelector((state)=>state.auth.user)
 
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const {data} = await axios.get("/api/auth/user")
-        setUser(data.user)
+        dispatch(setUser(data.user))
       } catch (err) {
-        setUser(null)
+        dispatch(setUser(null))
       }
     }
 
@@ -34,7 +37,7 @@ export default function UserMenu() {
 
   const handleLogout = async () => {
     await axios.post("/api/auth/logout")
-    setUser(null)
+    dispatch(setUser(null))
     router.push("/login") 
     toast.success("Logout successfully.")
   }
@@ -44,12 +47,11 @@ export default function UserMenu() {
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Avatar className="cursor-pointer">
-            <AvatarImage src="" alt={user.username} />
-            <AvatarFallback>{user.username[0].toUpperCase()}</AvatarFallback>
+            <AvatarFallback>{user?.username[0].toUpperCase()}</AvatarFallback>
           </Avatar>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <DropdownMenuItem disabled>{user.email}</DropdownMenuItem>
+          <DropdownMenuItem disabled>{user?.email}</DropdownMenuItem>
           <DropdownMenuItem>
             <Link href={"/profile"}>Profile</Link>
           </DropdownMenuItem>

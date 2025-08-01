@@ -11,16 +11,20 @@ const Navbar = () => {
         <div className="flex items-center space-x-4">
          <Link href={"/"} className="flex items-center gap-2">
           <img src="/vercel.svg" alt="Logo" className="h-8 w-8" />
-          <span className="text-lg font-bold">Locker Pro</span>
+          <span className="text-lg font-bold">LockerPro</span>
          </Link>
           
           <NavigationMenu>
             <NavigationMenuList className="space-x-2">
+               <NavigationMenuItem>
+                <Link href={"/"}>Home</Link>
+              </NavigationMenuItem>
+
               <NavigationMenuItem>
-                <Button variant="ghost">Your Passwords</Button>
+                <Link href={"/user-passwords"}>Your Passwords</Link>
               </NavigationMenuItem>
               <NavigationMenuItem>
-                <Button variant="ghost">Create New Password</Button>
+                <Link href={"/new-password"}>Create New Password</Link>
               </NavigationMenuItem>
             </NavigationMenuList>
           </NavigationMenu>
