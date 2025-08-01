@@ -27,7 +27,10 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       message: "User fetched successfully",
-      user,
+      user:{
+        username:user.username,
+        email:user.email
+      },
     })
   } catch (error) {
     console.error("Auth Error:", error)
