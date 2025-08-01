@@ -3,6 +3,9 @@
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useForm } from "react-hook-form"
 import { z } from "zod"
+import axios from "axios"
+import {Loader2Icon} from "lucide-react"
+import {useRouter} from "next/navigation"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -14,6 +17,8 @@ import {
   FormMessage,
 } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
+import { useState } from "react"
+import { toast } from "sonner"
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -29,6 +34,8 @@ const formSchema = z.object({
 
 const SignupForm = () => {
 
+  const [isLoading,setIsLoading] = useState(false)
+  const router = useRouter()
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -39,10 +46,23 @@ const SignupForm = () => {
   })
 
   // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
+  async function onSubmit(values: z.infer<typeof formSchema>) {
     // Do something with the form values.
     // ✅ This will be type-safe and validated.
-    console.log(values)
+
+    setIsLoading(true)
+    try{ 
+      const {data} = await axios.post(`/api/auth/signup`,values)
+      router.push("/")
+      toast.success(data.message)
+    
+    }catch(error:any){
+      toast.error(error?.response?.data?.message || 'Failed to create account.')
+     
+    }finally{
+      setIsLoading(false)
+    }
+    
   }
 
 
@@ -93,7 +113,14 @@ const SignupForm = () => {
             </FormItem>
           )}
         />
-        <Button type="submit">Submit</Button>
+        <Button type="submit" disabled={isLoading}>
+          {
+            isLoading ? <>
+            <Loader2Icon className="animate-spin"/> 
+            Please wait...
+            </> : 'Submit'
+          }
+          </Button>
       </form>
     </Form>
     </div>
