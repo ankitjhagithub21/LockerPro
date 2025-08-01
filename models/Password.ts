@@ -5,7 +5,7 @@ export interface IPassword extends Document {
   title: string
   website?: string
   username?: string
-  encryptedPassword: string
+  password: string
 }
 
 const PasswordSchema = new Schema<IPassword>(
@@ -14,7 +14,7 @@ const PasswordSchema = new Schema<IPassword>(
     title: { type: String, required: true },
     website: { type: String, required: false },
     username: { type: String, required: false },
-    encryptedPassword: { type: String, required: true },
+    password: { type: String, required: true },
   },
   { timestamps: true }
 )

@@ -1,8 +1,8 @@
-import Footer from "@/components/footer"
 import { Button } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card"
 import { LockIcon, ShieldIcon, KeyIcon, ZapIcon } from "lucide-react"
 import Image from "next/image"
+import Link from "next/link"
 
 export default function Home() {
   return (
@@ -24,12 +24,16 @@ export default function Home() {
             Never forget a password again while keeping your data safe.
           </p>
           <div className="mt-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+           <Link href={"/create-password"}>
             <Button size="lg" className="px-8">
               Start Free Trial
             </Button>
+           </Link>
+            <Link href={"/create-password"}>
             <Button size="lg" variant="outline" className="px-8">
               How It Works
             </Button>
+            </Link>
           </div>
         </div>
 
@@ -124,7 +128,7 @@ export default function Home() {
         </div>
       </section>
 
-      <Footer />
+     
 
     </div>
   )

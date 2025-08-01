@@ -13,10 +13,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
     }
 
-    const { title, website, username, encryptedPassword } = await req.json()
+    const { title, website, username, password } = await req.json()
 
-    if (!title || !encryptedPassword) {
-      return NextResponse.json({ error: "Title and encryptedPassword are required." }, { status: 400 })
+    if (!title || !password) {
+      return NextResponse.json({ message: "Title and password are required." }, { status: 400 })
     }
 
     const newPassword = new Password({
@@ -24,7 +24,7 @@ export async function POST(req: NextRequest) {
       title,
       website,
       username,
-      encryptedPassword,
+      password,
     })
 
     await newPassword.save()

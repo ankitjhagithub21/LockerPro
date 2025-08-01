@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import Navbar from "@/components/navbar";
 import { Toaster } from "sonner";
 import StoreProvider from "./StoreProvider";
+import Footer from "@/components/footer";
 
 
 const inter = Inter({ subsets: ['latin'], display: 'swap' });
@@ -31,6 +32,7 @@ export default function RootLayout({
         <StoreProvider>
             <Navbar/>
           {children}
+          <Footer/>
         </StoreProvider>
           <Toaster position="top-center" richColors/>
         </ThemeProvider>
