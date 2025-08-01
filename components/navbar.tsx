@@ -3,39 +3,27 @@ import { Button } from "@/components/ui/button"
 import UserMenu from "./user-menu"
 import { ModeToggle } from "./mode-toggle"
 import Link from "next/link"
+import { KeyIcon } from "lucide-react"
 
 const Navbar = () => {
   return (
-    <nav className="fixed top-0  z-40 w-full border-b bg-background">
-      <div className="container mx-auto flex h-16 items-center justify-between">
-        <div className="flex items-center space-x-4">
-         <Link href={"/"} className="flex items-center gap-2">
-          <img src="/vercel.svg" alt="Logo" className="h-8 w-8" />
-          <span className="text-lg font-bold">LockerPro</span>
-         </Link>
+   <nav className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 md:px-0 px-4">
+        <div className="container mx-auto flex h-16 items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <KeyIcon className="h-6 w-6 text-primary" />
+            <span className="text-lg font-bold">LockerPro</span>
+          </div>
+          <div className="flex items-center space-x-4">
+            <a href="#features" >
+               <Button variant="ghost">Features</Button>
+            </a>
+            <Button variant="ghost">Pricing</Button>
+            <UserMenu/>
+            <ModeToggle/>
+          </div>
           
-          <NavigationMenu>
-            <NavigationMenuList className="space-x-2">
-               <NavigationMenuItem>
-                <Link href={"/"}>Home</Link>
-              </NavigationMenuItem>
-
-              <NavigationMenuItem>
-                <Link href={"/user-passwords"}>Your Passwords</Link>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <Link href={"/new-password"}>Create New Password</Link>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
         </div>
-        
-        <div className="flex items-center space-x-4">
-          <UserMenu />
-          <ModeToggle />
-        </div>
-      </div>
-    </nav>
+      </nav>
   )
 }
 
