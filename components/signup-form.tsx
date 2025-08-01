@@ -19,6 +19,7 @@ import {
 import { Input } from "@/components/ui/input"
 import { useState } from "react"
 import { toast } from "sonner"
+import Link from "next/link"
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -53,7 +54,7 @@ const SignupForm = () => {
     setIsLoading(true)
     try{ 
       const {data} = await axios.post(`/api/auth/signup`,values)
-      router.push("/")
+      router.push("/login")
       toast.success(data.message)
     
     }catch(error:any){
@@ -118,11 +119,13 @@ const SignupForm = () => {
             isLoading ? <>
             <Loader2Icon className="animate-spin"/> 
             Please wait...
-            </> : 'Submit'
+            </> : 'Register'
           }
           </Button>
       </form>
+
     </Form>
+     <p className="text-sm mt-4">Already have an account ? <Link href={"/login"} className="underline">Login here</Link> </p>
     </div>
   )
 }
