@@ -5,9 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import Navbar from "@/components/navbar";
 
 
-const inter = Inter({
-  subsets: ["latin"],
-});
+const inter = Inter({ subsets: ['latin'], display: 'swap' });
 
 export const metadata: Metadata = {
   title: "Locker Pro",
