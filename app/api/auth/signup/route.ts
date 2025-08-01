@@ -1,5 +1,3 @@
-// app/api/users/route.ts
-
 import { connectToDatabase } from "@/lib/db"
 import { User } from "@/models/User"
 import { NextResponse } from "next/server"
