@@ -1,14 +1,6 @@
-import { Button } from "@/components/ui/button"
 import UserMenu from "./user-menu"
 import { ModeToggle } from "./mode-toggle"
-import { KeyIcon, MenuIcon, XIcon } from "lucide-react"
-import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet"
+import { KeyIcon} from "lucide-react"
 import Link from "next/link"
 
 const Navbar = () => {
@@ -21,32 +13,13 @@ const Navbar = () => {
           <span className="text-lg font-bold">LockerPro</span>
         </Link>
 
-        <div className="md:flex hidden  items-center gap-4">
-            <UserMenu/>
-            <ModeToggle/>
-        </div>
-       
-
-        {/* Mobile Navigation */}
-        <div className="flex md:hidden items-center space-x-2">
+        <div className="flex items-center gap-4">
+          <UserMenu />
           <ModeToggle />
-          <Sheet>
-            <SheetTrigger asChild>
-              <Button variant="ghost" size="icon">
-                <MenuIcon className="h-5 w-5" />
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[300px] sm:w-[400px]">
-              <SheetHeader>
-                <SheetTitle className="flex items-center space-x-2">
-                  <KeyIcon className="h-6 w-6 text-primary" />
-                  <span>LockerPro</span>
-                </SheetTitle>
-              </SheetHeader>
-           
-            </SheetContent>
-          </Sheet>
         </div>
+
+
+       
       </div>
     </nav>
   )

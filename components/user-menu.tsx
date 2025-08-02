@@ -67,8 +67,10 @@ export default function UserMenu() {
 
   return (
     <div className="flex gap-2">
-      <Button variant="outline" onClick={() => router.push("/login")}>Login</Button>
-      <Button onClick={() => router.push("/signup")}>Sign Up</Button>
+     <Link href={"/login"}>
+      <Button >Login</Button>
+     </Link>
+     
     </div>
   )
 }
