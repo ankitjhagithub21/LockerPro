@@ -21,6 +21,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Pencil, Eye, Trash2, Loader2Icon } from "lucide-react"
 import axios from "axios"
 import { toast } from "sonner"
+import Link from "next/link"
 axios.defaults.withCredentials = true;
 
 interface PasswordItem {
@@ -74,7 +75,7 @@ export default function PasswordManager() {
     const editPassword = async () => {
         setIsLoading(true)
         try{
-        const {data} = await axios.put(`/api/passwords/${selected?._id}`,selected)
+        const {data} = await axios.put(`/api/passwords/update/${selected?._id}`,selected)
         toast.success(data.message)
         fetchPasswords()
         }catch(error:any){
@@ -88,7 +89,12 @@ export default function PasswordManager() {
 
     return (
         <div className="max-w-3xl mx-auto p-6">
-            <h2 className="text-2xl font-semibold mb-4">Saved Passwords</h2>
+           <div className="flex items-center justify-between mb-5">
+             <h2 className="text-xl font-semibold">Saved Passwords</h2>
+             <Link href={"/create-password"}>
+             <Button>Add</Button>
+             </Link>
+           </div>
             <Input
                 placeholder="Search passwords..."
                 value={search}
@@ -144,7 +150,7 @@ export default function PasswordManager() {
             </ScrollArea>
 
             <Dialog open={!!dialogType && !!selected} onOpenChange={() => { setSelected(null); setDialogType(null) }}>
-                <DialogContent>
+                <DialogContent onInteractOutside={(e) => e.preventDefault()} showCloseButton={false}>
                     <DialogHeader>
                         <DialogTitle>{dialogType === "view" ? "View Password" : "Edit Password"}</DialogTitle>
                     </DialogHeader>
