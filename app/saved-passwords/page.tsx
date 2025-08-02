@@ -1,0 +1,123 @@
+"use client"
+
+import { useEffect, useState } from "react"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
+import { ScrollArea } from "@/components/ui/scroll-area"
+import { Textarea } from "@/components/ui/textarea"
+import { Pencil, Eye, Trash2 } from "lucide-react"
+import axios from "axios"
+axios.defaults.withCredentials = true;
+
+interface PasswordItem {
+    _id: string
+    title: string
+    website?: string
+    username?: string
+    encryptedPassword: string
+}
+
+export default function PasswordManager() {
+    const [passwords, setPasswords] = useState<PasswordItem[]>([])
+    const [filtered, setFiltered] = useState<PasswordItem[]>([])
+    const [search, setSearch] = useState("")
+    const [selected, setSelected] = useState<PasswordItem | null>(null)
+    const [dialogType, setDialogType] = useState<"view" | "edit" | null>(null)
+
+    useEffect(() => {
+        fetchPasswords()
+    }, [])
+
+    useEffect(() => {
+        setFiltered(
+            passwords.filter(p =>
+                p.title.toLowerCase().includes(search.toLowerCase())
+            )
+        )
+    }, [search, passwords])
+
+    const fetchPasswords = async () => {
+        try {
+            const { data } = await axios.get("/api/passwords")
+            setPasswords(data.data || [])
+        } catch (error) {
+            setPasswords([])
+        }
+    }
+
+    const deletePassword = async (id: string) => {
+        await fetch(`/api/passwords/${id}`, { method: "DELETE" })
+        fetchPasswords()
+    }
+
+    return (
+        <div className="max-w-3xl mx-auto p-6">
+            <h2 className="text-2xl font-semibold mb-4">Saved Passwords</h2>
+            <Input
+                placeholder="Search passwords..."
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="mb-4"
+            />
+
+            <ScrollArea className="h-[500px] rounded-md border p-4">
+                {filtered.length === 0 ? (
+                    <p className="text-muted-foreground">No passwords found.</p>
+                ) : (
+                    filtered.map((item) => (
+                        <Card key={item._id} className="mb-4">
+                            <CardHeader className="flex flex-row justify-between items-center">
+                                <div>
+                                    <h4 className="font-medium">{item.title}</h4>
+                                    <p className="text-sm text-muted-foreground">{item.website}</p>
+                                </div>
+                                <div className="flex gap-2">
+                                    <Button size="icon" variant="ghost" onClick={() => { setSelected(item); setDialogType("view") }}><Eye size={18} /></Button>
+                                    <Button size="icon" variant="ghost" onClick={() => { setSelected(item); setDialogType("edit") }}><Pencil size={18} /></Button>
+                                    <Button size="icon" variant="ghost" onClick={() => deletePassword(item._id)}><Trash2 size={18} /></Button>
+                                </div>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-sm text-muted-foreground">Username: {item.username || "-"}</p>
+                            </CardContent>
+                        </Card>
+                    ))
+                )}
+            </ScrollArea>
+
+            <Dialog open={!!dialogType && !!selected} onOpenChange={() => { setSelected(null); setDialogType(null) }}>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>{dialogType === "view" ? "View Password" : "Edit Password"}</DialogTitle>
+                    </DialogHeader>
+                    {selected && (
+                        <div className="space-y-4">
+                            <div>
+                                <p className="text-sm font-medium">Title</p>
+                                <Input defaultValue={selected.title} disabled={dialogType === "view"} />
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium">Website</p>
+                                <Input defaultValue={selected.website} disabled={dialogType === "view"} />
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium">Username</p>
+                                <Input defaultValue={selected.username} disabled={dialogType === "view"} />
+                            </div>
+                            <div>
+                                <p className="text-sm font-medium">Password</p>
+                                <Textarea defaultValue={selected.encryptedPassword} disabled={dialogType === "view"} />
+                            </div>
+                        </div>
+                    )}
+                    <DialogFooter className="mt-4">
+                        <Button variant="outline" onClick={() => { setDialogType(null); setSelected(null) }}>Close</Button>
+                        {dialogType === "edit" && <Button>Save Changes</Button>}
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
+        </div>
+    )
+}

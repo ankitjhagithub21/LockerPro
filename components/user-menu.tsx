@@ -52,8 +52,12 @@ export default function UserMenu() {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem disabled>{user?.email}</DropdownMenuItem>
+           <DropdownMenuItem>
+            <Link className="text-sm" href={"/saved-passwords"}>Saved Passwords</Link>
+          </DropdownMenuItem>
+
           <DropdownMenuItem>
-            <Link href={"/profile"}>Profile</Link>
+            <Link className="text-sm" href={"/create-password"}>Create New Password</Link>
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
         </DropdownMenuContent>

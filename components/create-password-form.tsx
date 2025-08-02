@@ -12,6 +12,7 @@ import { useState } from "react"
 import axios from "axios";
 import { Loader2Icon } from "lucide-react"
 import { toast } from "sonner"
+import { useAppSelector } from "@/lib/hooks"
 axios.defaults.withCredentials = true;
 
 const formSchema = z.object({
@@ -33,13 +34,15 @@ export function CreatePasswordForm() {
   })
 
   const [isLoading,setIsLoading] = useState(false)
+  const {user} = useAppSelector((state)=>state.auth)
 const { reset } = form
 
   const onSubmit = async(values: z.infer<typeof formSchema>) => {
  
+    if(!user) return toast.error("You are not logged in.")
    setIsLoading(true);
    try{
-    const {data}= await axios.post("/api/password/create",values);
+    const {data}= await axios.post("/api/passwords/create",values);
     toast.success(data.message)
     reset()
    }catch(error:any){
