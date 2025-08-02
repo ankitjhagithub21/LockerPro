@@ -21,7 +21,7 @@ const Navbar = () => {
           <span className="text-lg font-bold">LockerPro</span>
         </Link>
 
-        <div className="flex items-center gap-4">
+        <div className="md:flex hidden  items-center gap-4">
             <UserMenu/>
             <ModeToggle/>
         </div>

@@ -1,4 +1,15 @@
 "use client"
+import {
+    AlertDialog,
+    AlertDialogAction,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogFooter,
+    AlertDialogHeader,
+    AlertDialogTitle,
+    AlertDialogTrigger,
+} from "@/components/ui/alert-dialog"
+
 
 import { useEffect, useState } from "react"
 import { Input } from "@/components/ui/input"
@@ -9,6 +20,7 @@ import { ScrollArea } from "@/components/ui/scroll-area"
 import { Textarea } from "@/components/ui/textarea"
 import { Pencil, Eye, Trash2 } from "lucide-react"
 import axios from "axios"
+import { toast } from "sonner"
 axios.defaults.withCredentials = true;
 
 interface PasswordItem {
@@ -16,7 +28,7 @@ interface PasswordItem {
     title: string
     website?: string
     username?: string
-    encryptedPassword: string
+    password: string
 }
 
 export default function PasswordManager() {
@@ -25,7 +37,7 @@ export default function PasswordManager() {
     const [search, setSearch] = useState("")
     const [selected, setSelected] = useState<PasswordItem | null>(null)
     const [dialogType, setDialogType] = useState<"view" | "edit" | null>(null)
-
+    const [deleteId, setDeleteId] = useState<string | null>(null)
     useEffect(() => {
         fetchPasswords()
     }, [])
@@ -48,8 +60,13 @@ export default function PasswordManager() {
     }
 
     const deletePassword = async (id: string) => {
-        await fetch(`/api/passwords/${id}`, { method: "DELETE" })
+        try{
+        const {data} = await axios.delete(`/api/passwords/${id}`)
+        toast.success(data.message)
         fetchPasswords()
+        }catch(error:any){
+            toast.error(error?.response?.data?.message || 'Password not deleted.')
+        }
     }
 
     return (
@@ -76,7 +93,29 @@ export default function PasswordManager() {
                                 <div className="flex gap-2">
                                     <Button size="icon" variant="ghost" onClick={() => { setSelected(item); setDialogType("view") }}><Eye size={18} /></Button>
                                     <Button size="icon" variant="ghost" onClick={() => { setSelected(item); setDialogType("edit") }}><Pencil size={18} /></Button>
-                                    <Button size="icon" variant="ghost" onClick={() => deletePassword(item._id)}><Trash2 size={18} /></Button>
+                                    <AlertDialog>
+                                        <AlertDialogTrigger asChild>
+                                            <Button size="icon" variant="ghost" onClick={() => setDeleteId(item._id)}>
+                                                <Trash2 size={18} />
+                                            </Button>
+                                        </AlertDialogTrigger>
+                                        <AlertDialogContent>
+                                            <AlertDialogHeader>
+                                                <AlertDialogTitle>Are you sure you want to delete this password?</AlertDialogTitle>
+                                            </AlertDialogHeader>
+                                            <AlertDialogFooter>
+                                                <AlertDialogCancel>Cancel</AlertDialogCancel>
+                                                <AlertDialogAction
+                                                    onClick={() => {
+                                                        if (deleteId) deletePassword(deleteId)
+                                                    }}
+                                                >
+                                                    Delete
+                                                </AlertDialogAction>
+                                            </AlertDialogFooter>
+                                        </AlertDialogContent>
+                                    </AlertDialog>
+
                                 </div>
                             </CardHeader>
                             <CardContent>
@@ -108,7 +147,7 @@ export default function PasswordManager() {
                             </div>
                             <div>
                                 <p className="text-sm font-medium">Password</p>
-                                <Textarea defaultValue={selected.encryptedPassword} disabled={dialogType === "view"} />
+                                <Textarea defaultValue={selected.password} disabled={dialogType === "view"} />
                             </div>
                         </div>
                     )}
