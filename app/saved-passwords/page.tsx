@@ -18,7 +18,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Textarea } from "@/components/ui/textarea"
-import { Pencil, Eye, Trash2 } from "lucide-react"
+import { Pencil, Eye, Trash2, Loader2Icon } from "lucide-react"
 import axios from "axios"
 import { toast } from "sonner"
 axios.defaults.withCredentials = true;
@@ -38,6 +38,8 @@ export default function PasswordManager() {
     const [selected, setSelected] = useState<PasswordItem | null>(null)
     const [dialogType, setDialogType] = useState<"view" | "edit" | null>(null)
     const [deleteId, setDeleteId] = useState<string | null>(null)
+    const [isLoading,setIsLoading] = useState(false)
+
     useEffect(() => {
         fetchPasswords()
     }, [])
@@ -69,6 +71,21 @@ export default function PasswordManager() {
         }
     }
 
+    const editPassword = async () => {
+        setIsLoading(true)
+        try{
+        const {data} = await axios.put(`/api/passwords/${selected?._id}`,selected)
+        toast.success(data.message)
+        fetchPasswords()
+        }catch(error:any){
+            toast.error(error?.response?.data?.message || 'Password not saved.')
+        }finally{
+            setIsLoading(false)
+            setDialogType(null)
+            
+        }
+    }
+
     return (
         <div className="max-w-3xl mx-auto p-6">
             <h2 className="text-2xl font-semibold mb-4">Saved Passwords</h2>
@@ -92,7 +109,7 @@ export default function PasswordManager() {
                                 </div>
                                 <div className="flex gap-2">
                                     <Button size="icon" variant="ghost" onClick={() => { setSelected(item); setDialogType("view") }}><Eye size={18} /></Button>
-                                    <Button size="icon" variant="ghost" onClick={() => { setSelected(item); setDialogType("edit") }}><Pencil size={18} /></Button>
+                                    <Button  size="icon" variant="ghost" onClick={() => { setSelected(item); setDialogType("edit") }}><Pencil size={18} /></Button>
                                     <AlertDialog>
                                         <AlertDialogTrigger asChild>
                                             <Button size="icon" variant="ghost" onClick={() => setDeleteId(item._id)}>
@@ -152,8 +169,15 @@ export default function PasswordManager() {
                         </div>
                     )}
                     <DialogFooter className="mt-4">
-                        <Button variant="outline" onClick={() => { setDialogType(null); setSelected(null) }}>Close</Button>
-                        {dialogType === "edit" && <Button>Save Changes</Button>}
+                        <Button variant="outline" disabled={isLoading} onClick={() => { setDialogType(null); setSelected(null) }}>Close</Button>
+                        {dialogType === "edit" && <Button onClick={editPassword} disabled={isLoading}>
+                            {
+                                isLoading ? <>
+                                <Loader2Icon className="animate-spin"/>
+                                Saving...
+                                </> : 'Save changes'
+                            }
+                            </Button>}
                     </DialogFooter>
                 </DialogContent>
             </Dialog>
