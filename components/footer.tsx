@@ -5,7 +5,7 @@ const Footer = () => {
     return (
         <footer className="border-t py-12">
             <div className="container mx-auto">
-                <div className="grid grid-cols-2  gap-8 md:grid-cols-4">
+                <div className="grid grid-cols-2  gap-8 md:grid-cols-4 px-5">
                     <div>
                         <h4 className="mb-4 text-sm font-semibold">Product</h4>
                         <ul className="space-y-2">
@@ -40,7 +40,7 @@ const Footer = () => {
                     </div>
                 </div>
                 <div className="mt-12 border-t pt-8 text-center text-sm text-muted-foreground">
-                    © {new Date().getFullYear()} LockerPro. All rights reserved.
+                    Developed by <a href="https://ankitjha.vercel.app" target='_blank' className='underline'>Ankit Jha</a>
                 </div>
             </div>
         </footer>
